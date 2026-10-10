@@ -1,0 +1,52 @@
+product:
+  name: "screw_v1"
+  description: "Standard industrial hex socket metal screw defect profile"
+  version: "1.0.0"
+
+model:
+  backbone: "wide_resnet50_2" # Optional alternative: "dinov2_vits14"
+  layers:
+    - "layer2"
+    - "layer3"
+  input_size: [256, 256]
+  pooling_kernel: 3
+  pooling_stride: 1
+
+memory_bank:
+  coreset_sampling_ratio: 0.05
+  min_reference_images: 10
+  max_reference_images: 20
+  subsample_method: "greedy_coreset"
+  projection_dim: 128
+  storage_path: "artifacts/memory_banks/screw_v1_v1.0.pt"
+
+thresholds:
+  default_image_threshold: 0.55
+  default_pixel_threshold: 0.40
+  min_defect_area_pixels: 12
+  gaussian_blur_sigma: 4.0
+
+quality_check:
+  min_laplacian_var: 100.0
+  max_overexposure_ratio: 0.18
+  max_underexposure_ratio: 0.35
+  min_contrast_rms: 0.12
+  screw_presence_min_ratio: 0.04
+
+preprocessing:
+  clahe:
+    enabled: true
+    clip_limit: 2.0
+    tile_grid_size: [8, 8]
+  white_balance:
+    enabled: true
+    method: "gray_world"
+  gamma_correction:
+    enabled: true
+    gamma: 1.05
+
+continuous_learning:
+  max_patches_per_feedback_image: 40
+  max_feedback_buffer_size: 500
+  enable_automatic_versioning: true
+  backup_dir: "artifacts/memory_banks/backups"
